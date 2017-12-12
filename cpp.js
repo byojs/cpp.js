@@ -489,7 +489,7 @@ function cpp_js(settings) {
 						processor = cpp_js(s);
 						processor._set_state(self);
 						processor.run(contents, file);
-					});
+					}, undefined, name);
 					return false;
 					
 				case "error":
