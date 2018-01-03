@@ -75,11 +75,11 @@ function cpp_js(settings) {
 					str[i+1] = '';
 					block_comment--;
 				}
-				str[i] = '';
 				
 				if (str[i] === '\n') {
 					++lines_lost;
 				}
+				str[i] = '';
 				continue;
 			}
 	 
