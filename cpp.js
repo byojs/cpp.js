@@ -455,10 +455,15 @@ function cpp_js(settings) {
 							"no handler specified");
 					}
 					
-					settings.include_func(file, parts[1] === '<', function(contents) {
+					var path = require('path');
+					// TODO: will this work if 'file' is absolute? (not that it ever is)
+					var relative_path = path.join(path.dirname(name), file.replace('\\', '/'));
+					console.log(relative_path);
+
+					settings.include_func(relative_path, parts[1] === '<', function(contents) {
 						if (contents === null) {
 							error("failed to access include file: " +
-								file);
+								relative_path);
 						}
 						var s = {};
 						for(var k in settings) {
@@ -468,11 +473,15 @@ function cpp_js(settings) {
 						var processor;
 						
 						s.completion_func = function(data, lines, new_state) {
+							out[outi++] = '# 1 "' + relative_path.replace('"', '') + '" 1';
+
 							out.length = outi;
 							
 							outi += lines.length;
 							out = out.concat(lines);
-			
+
+							out[outi++] = '# ' + line + ' "' + name.replace('"', '') + '" 2';
+
 							// grab any state changes
 							self._set_state(processor);
 							
@@ -488,7 +497,7 @@ function cpp_js(settings) {
 						// state.
 						processor = cpp_js(s);
 						processor._set_state(self);
-						processor.run(contents, file);
+						processor.run(contents, relative_path);
 					}, undefined, name);
 					return false;
 					
