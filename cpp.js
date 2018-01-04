@@ -458,7 +458,7 @@ function cpp_js(settings) {
 					var path = require('path');
 					// TODO: will this work if 'file' is absolute? (not that it ever is)
 					var relative_path = path.join(path.dirname(name), file.replace('\\', '/'));
-					console.log(relative_path);
+					//console.log(relative_path);
 
 					settings.include_func(relative_path, parts[1] === '<', function(contents) {
 						if (contents === null) {
