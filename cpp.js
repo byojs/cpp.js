@@ -56,16 +56,16 @@ function cpp_js(settings) {
 		// but removed JS-specific stuff and added handling of line continuations. Also, newlines
 		// are generally preserved to keep line numbers intact.
 		str = ('__' + str.replace(/\r\n/g,'\n') + '__').split('');
-		var block_comment = 0, line_comment = false, quote = false, lines_lost = 0;
+		var block_comment = 0, line_comment = false, quote = false, quoteType, lines_lost = 0;
 		for (var i = 0, l = str.length; i < l; i++) {
-	
+
 			if (quote) {
-				if ((str[i] === "'" || str[i] === '"') && str[i-1] !== '\\') {
+				if ((str[i] === quoteType) && str[i-1] !== '\\') {
 					quote = false;
+					continue;
 				}
-				continue;
 			}
-	 
+			else {
 			if (block_comment > 0) {
 				if (str[i] === '/' && str[i+1] === '*') {
 					str[i+1] = '';
@@ -90,7 +90,8 @@ function cpp_js(settings) {
 				str[i] = '';
 				continue;
 			}
-			
+			}
+
 			if (str[i] === '\n') {
 				if (str[i-1] == '\\') {
 					// line continuation, replace by whitespace
@@ -105,8 +106,13 @@ function cpp_js(settings) {
 					}
 				}
 			}
+
+			if (quote)
+				continue;
 	 
 			quote = str[i] === "'" || str[i] === '"';
+			if (quote)
+				quoteType = str[i];
 			if (str[i] === '/') {
 	 
 				if (str[i+1] === '*') {
